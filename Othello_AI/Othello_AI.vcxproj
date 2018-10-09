@@ -115,7 +115,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AI.hpp" />
+    <ClInclude Include="Base.hpp" />
+    <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="FixedGrid.hpp" />
+    <ClInclude Include="Stopwatch.hpp" />
+    <ClInclude Include="Timer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
