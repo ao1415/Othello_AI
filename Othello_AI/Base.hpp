@@ -41,7 +41,7 @@ struct Point {
 	}
 
 	const bool inside() const { return ::inside(x, y); }
-	const string toString() const { return "(" + to_string(x) + ", " + to_string(y) + ")"; }
+	const string toString() const { return to_string(x) + " " + to_string(y); }
 
 	Point operator+(const Point& o) const { return Point(x + o.x, y + o.y); }
 	Point operator-(const Point& o) const { return Point(x - o.x, y - o.y); }

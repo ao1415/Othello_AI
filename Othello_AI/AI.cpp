@@ -11,8 +11,7 @@ const string AI::think() {
 	
 	const auto& poition = engine.getPut();
 
-
-
+	com = poition.begin()->toString();
 
 	return com;
 }
