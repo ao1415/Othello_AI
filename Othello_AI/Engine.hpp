@@ -15,6 +15,7 @@ private:
 
 	void creatTable();
 
+	void reverseTable(Table& table, const Point& pos) const;
 
 public:
 
@@ -27,9 +28,16 @@ public:
 		rColor = reverse(color);
 
 		creatTable();
+
+		if (putTable.empty())
+		{
+			swap(color, rColor);
+			creatTable();
+		}
 	}
 
 	const Table& getTable() const { return table; }
+	const Color getColor() const { return color; }
 
 	const bool isPut(const int x, const int y) const {
 		return (putTable.find({ x,y }) != putTable.end());
@@ -41,6 +49,9 @@ public:
 	Engine getNext(const Point& pos) const {
 
 		Table nextTable = table;
+
+		reverseTable(nextTable, pos);
+
 		Color nextColor = reverse(color);
 
 		return Engine(move(nextTable), nextColor);

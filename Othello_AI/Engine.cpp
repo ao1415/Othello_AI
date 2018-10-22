@@ -72,3 +72,49 @@ void Engine::creatTable() {
 	}
 
 }
+
+void Engine::reverseTable(Table& table, const Point& pos) const {
+
+	const array<int, 8> dx{ -1,0,1,-1,1,-1,0,1 };
+	const array<int, 8> dy{ -1,-1,-1,0,0,1,1,1 };
+
+	table[pos] = color;
+
+	for (int d = 0; d < 8; d++)
+	{
+		bool flag = false;
+		Point p(pos.x + dx[d], pos.y + dy[d]);
+
+		if (p.inside())
+		{
+			if (table[p] == rColor)
+			{
+				for (int i = 1; i < Size; i++)
+				{
+					p.x += dx[d];
+					p.y += dy[d];
+					if (p.inside())
+					{
+						if (table[p] == Color::None) break;
+						else if (table[p] == color)
+						{
+							Point rp(pos.x + dx[d], pos.y + dy[d]);
+							for (int c = 0; c < i; c++)
+							{
+								table[rp] = color;
+								rp.x += dx[d];
+								rp.y += dy[d];
+							}
+							break;
+						}
+					}
+					else
+						break;
+				}
+			}
+		}
+
+	}
+
+
+}

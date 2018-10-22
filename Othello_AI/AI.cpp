@@ -86,5 +86,8 @@ const double AI::evaluation(const Engine& engine) {
 
 	score += random.rand();
 
+	if (engine.getColor() != color)
+		score *= -1;
+
 	return score;
 }
