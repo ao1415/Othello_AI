@@ -8,6 +8,8 @@ private:
 	int fieldSize;
 	int lifetime;
 
+	int turn = 0;
+
 	Color color;
 
 	int time;
@@ -15,6 +17,18 @@ private:
 	Table table;
 
 	Stopwatch sw;
+	XorShift random;
+
+	struct Data {
+
+		Engine engine;
+		double score = 0;
+		Point pos;
+
+		bool operator<(const Data& other) const {
+			return score < other.score;
+		}
+	};
 
 public:
 
@@ -39,6 +53,8 @@ public:
 
 	bool loop() {
 
+		turn = 0;
+
 		cin >> time;
 
 		string line;
@@ -49,8 +65,14 @@ public:
 			{
 				switch (line[x])
 				{
-				case Black: table[y][x] = Color::Black; break;
-				case White: table[y][x] = Color::White; break;
+				case Black:
+					table[y][x] = Color::Black;
+					turn++;
+					break;
+				case White:
+					table[y][x] = Color::White;
+					turn++;
+					break;
 				case Empty: table[y][x] = Color::None; break;
 				default:
 					break;
@@ -65,5 +87,7 @@ public:
 	}
 
 	const string think();
+
+	const double evaluation(const Engine& engine);
 
 };

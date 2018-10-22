@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <memory>
 #include <functional>
+#include <random>
 
 using namespace std;
 
@@ -102,3 +103,20 @@ inline void show(const Table& table) {
 		cerr << endl;
 	}
 }
+
+struct XorShift {
+	unsigned int x;
+	XorShift() : x(2463534242U) {}
+	unsigned int next() {
+		x ^= (x << 13);
+		x ^= (x >> 17);
+		x ^= (x << 5);
+		return x;
+	}
+
+	double rand() {
+		return next() / 4294967295.0;
+	}
+
+};
+
