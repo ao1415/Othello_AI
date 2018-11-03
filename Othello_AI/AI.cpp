@@ -2,92 +2,102 @@
 
 const string AI::think() {
 
-	const int Turn = 10;
-	const int ChokudaiWidth = 3;
+	/*
+	とりあえずいつものように幅優先探査にした
+	手番が交互に回ってくるのであまり適してない？
+	　木構造にしたほうが良い？
+	　　パスの表現方法は？
+	　　　木構造の場合、深度のターン数が常に一定
+	相手番の場合、自分が最低値になる箇所に置かせたい
+	　各手番上位5個保存していく？
+	　　木ごとに状態の管理が必要
+	適当にすると読み切れない
+	*/
 
-	array<priority_queue<Data>, Turn + 1> qData;
+	auto initTable = table;
+	Engine engine(move(initTable), color);
 
+	const int Turn = min(6, 64 - turn);
+
+	const auto& best = minmax(engine, 0, Turn);
+
+	return best.second.toString();
+}
+
+const pair<double, Point> AI::minmax(const Engine& engine, const int turn, const int depth) {
+
+	if (turn >= depth)
+		return { evaluation(engine),Point(0,0) };
+
+	const auto& position = engine.getPut();
+
+	pair<double, Point> best;
+	best.first = -99999999;
+	best.second = Point(0, 0);
+
+	if (position.empty())
 	{
-		Data init;
-
-		auto initTable = table;
-		init.engine = Engine(move(initTable), color);
-
-		qData[0].emplace(init);
+		return { evaluation(engine),Point(0,0) };
 	}
-
-	Timer timer(chrono::milliseconds(50));
-
-	timer.start();
-
-	const int LastTurn = min(Turn, (Size * Size) - turn);
-
-	while (!timer)
+	else
 	{
-		for (int turn = 0; turn < LastTurn; turn++)
+		for (const auto& pos : position)
 		{
-			for (int w = 0; w < ChokudaiWidth; w++)
+			auto nextEngine = engine.getNext(pos);
+
+			auto score = minmax(nextEngine, turn + 1, depth);
+			score.second = pos;
+
+			if (engine.getColor() == color)
 			{
-				if (qData[turn].empty()) break;
-
-				const auto& top = qData[turn].top();
-
-				const auto& poition = top.engine.getPut();
-
-				for (const auto& pos : poition)
+				if (best.first < score.first)
 				{
-					Data next;
-
-					next.engine = top.engine.getNext(pos);
-
-					next.score = evaluation(next.engine);
-
-					if (turn == 0) next.pos = pos;
-					else next.pos = top.pos;
-
-					qData[turn + 1].push(next);
+					best = score;
 				}
-
-				qData[turn].pop();
 			}
+			else
+			{
+				if (best.first < -score.first)
+				{
+					best = score;
+				}
+			}
+
 		}
 	}
 
-	if (!qData[LastTurn].empty())
-	{
-		const auto& top = qData[LastTurn].top();
-		cerr << "Score:" << top.score << endl;
-
-		return top.pos.toString();
-	}
-
-	return "0 0";
+	return best;
 }
 
 const double AI::evaluation(const Engine& engine) {
 
 	double score = 0;
 
-	const auto& table = engine.getTable();
-
-	int count = 0;
-	for (int y = 0; y < Size; y++)
+	if (turn < 64 - 12)
 	{
-		for (int x = 0; x < Size; x++)
+		const auto& position = engine.getPut();
+
+		score = (double)position.size();
+	}
+	else
+	{
+		const auto& table = engine.getTable();
+
+		int count = 0;
+		for (int y = 0; y < Size; y++)
 		{
-			if (table[y][x] == color)
+			for (int x = 0; x < Size; x++)
 			{
-				count++;
+				if (table[y][x] == color)
+				{
+					count++;
+				}
 			}
 		}
+		score += count;
 	}
 
-	score += count;
-
 	score += random.rand();
-
-	if (engine.getColor() != color)
-		score *= -1;
 
 	return score;
 }

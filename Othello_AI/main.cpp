@@ -2,7 +2,7 @@
 
 int main() {
 
-	cout << "ao1415" << endl;
+	cout << "ao1415AI" << endl;
 	cout.flush();
 
 	AI ai;

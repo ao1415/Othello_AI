@@ -19,17 +19,6 @@ private:
 	Stopwatch sw;
 	XorShift random;
 
-	struct Data {
-
-		Engine engine;
-		double score = 0;
-		Point pos;
-
-		bool operator<(const Data& other) const {
-			return score < other.score;
-		}
-	};
-
 public:
 
 	void first() {
@@ -87,6 +76,8 @@ public:
 	}
 
 	const string think();
+
+	const pair<double, Point> minmax(const Engine& engine, const int turn, const int depth);
 
 	const double evaluation(const Engine& engine);
 
